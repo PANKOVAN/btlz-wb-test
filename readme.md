@@ -14,42 +14,46 @@
 
 Сейчас сервисы обновляются каждую минуту, чтобы сразу видеть результат. Можно перестроить на 1 час как в ТЗ. Для настройки переодического запуска используется нотация cron. Каждый сервис может иметь свое расписание.
 
-Структура базы, самая обычная. 
+Структура базы, самая обычная. Для работы с ней используется knex.
 ```js
 knex.schema
-        .createTable("geo", (table) => {
-            table.increments("id").primary();
-            table.string("name").notNullable();
-            table.unique("name");
-        })
-        .createTable("warehouse", (table) => {
-            table.increments("id").primary();
-            table.string("name").notNullable();
-            table.integer("geo_id").references("id").inTable("geo").index('geo_id');
-            table.unique(["name", "geo_id"]);
-        })
-        .createTable("tariff_box", (table) => {
-            table.increments("id").primary();
-            table.date("date").notNullable().index('date');
-            table.float("boxDeliveryBase").nullable();
-            table.float("boxDeliveryCoefExpr").nullable();
-            table.float("boxDeliveryLiter").nullable();
-            table.float("boxDeliveryMarketplaceBase").nullable();
-            table.float("boxDeliveryMarketplaceCoefExpr").nullable();
-            table.float("boxDeliveryMarketplaceLiter").nullable();
-            table.float("boxStorageBase").nullable();
-            table.float("boxStorageCoefExpr").nullable();
-            table.float("boxStorageLiter").nullable();
-            table.integer("warehouse_id").references("id").inTable("warehouse").index('warehouse_id');
-            table.unique(["date", "warehouse_id"]);
-        })
-        .createTable("spreadsheet", (table) => {
-            table.increments("id").primary();
-            table.string("name").notNullable();
-            table.unique("name");
-        })
+    .createTable("geo", (table) => {
+        table.increments("id").primary();
+        table.string("name").notNullable();
+        table.unique("name");
+    })
+    .createTable("warehouse", (table) => {
+        table.increments("id").primary();
+        table.string("name").notNullable();
+        table.integer("geo_id").references("id").inTable("geo").index('geo_id');
+        table.unique(["name", "geo_id"]);
+    })
+    .createTable("tariff_box", (table) => {
+        table.increments("id").primary();
+        table.date("date").notNullable().index('date');
+        table.float("boxDeliveryBase").nullable();
+        table.float("boxDeliveryCoefExpr").nullable();
+        table.float("boxDeliveryLiter").nullable();
+        table.float("boxDeliveryMarketplaceBase").nullable();
+        table.float("boxDeliveryMarketplaceCoefExpr").nullable();
+        table.float("boxDeliveryMarketplaceLiter").nullable();
+        table.float("boxStorageBase").nullable();
+        table.float("boxStorageCoefExpr").nullable();
+        table.float("boxStorageLiter").nullable();
+        table.integer("warehouse_id").references("id").inTable("warehouse").index('warehouse_id');
+        table.unique(["date", "warehouse_id"]);
+    })
+    .createTable("spreadsheet", (table) => {
+        table.increments("id").primary();
+        table.string("name").notNullable();
+        table.unique("name");
+    })
 ```
 
+Работу можно проследить по логам.
+```
+docker log ...
+```
 
 
 ## Настройка
@@ -100,13 +104,6 @@ docker compose up -d --build
 ```bash
 docker compose down 
 ```
-
-Добавление нового id в список таблиц.
-
-```bash
-docker compose down 
-```
-
 
 Проверка работы сервиса
 ```bash
